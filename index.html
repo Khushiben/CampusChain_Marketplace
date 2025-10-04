@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized College Marketplace</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- ✅ Load Ethers v6 UMD (required for BrowserProvider and global 'ethers') -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">College Marketplace</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="list-item.html">List Item</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><button id="connectWalletBtn">Connect Wallet</button></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <marquee behavior="scroll" direction="left" scrollamount="10" class="marquee-text">
+            Welcome to the Decentralized College Marketplace
+        </marquee>
+        <p>Buy, sell, and trade securely within your college ecosystem using blockchain.</p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+         <marquee behavior="scroll" direction="left" scrollamount="10" class="marquee-text18">
+            Features
+        </marquee>
+        <div class="feature-cards">
+            <div class="card" onclick="showFeatureDescription('Ensure trust and authenticity. Only verified students can list items.')">
+                <h3>Verified Students Only</h3>
+                <p><u>Click to see details</u></p>
+            </div>
+            <div class="card" onclick="showFeatureDescription('Peer-to-peer transactions using crypto. No middleman required.')">
+                <h3>Secure Payments</h3>
+                <p><u>Click to see details</u></p>
+            </div>
+            <div class="card" onclick="showFeatureDescription('Ownership transfer recorded on blockchain. Fully transparent and secure.')">
+                <h3>Digital Ownership</h3>
+                <p><u>Click to see details</u></p>
+            </div>
+            <div class="card" onclick="showFeatureDescription('Upload and sell notes, guides, or other digital creations within college.')">
+                <h3>Sell Digital Content</h3>
+                <p><u>Click to see details</u></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+<!-- How It Works Section -->
+<section class="how-it-works">
+    <h2>
+        <marquee behavior="scroll" direction="left" scrollamount="10" class="marquee-text18">
+            How It Works
+        </marquee>
+    </h2>
+    <div class="steps">
+        <div class="step-card">
+            <div class="step-emoji">👜</div>
+            <h3>1. Connect Your Wallet</h3>
+            <p>Securely connect your MetaMask wallet to start buying or selling items.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-emoji">📚</div>
+            <h3>2. List Your Items</h3>
+            <p>Add your books, notes, or digital content to the marketplace for others to purchase.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-emoji">💰</div>
+            <h3>3. Buy & Sell</h3>
+            <p>Buy items from other students or sell your own. All transactions are recorded on blockchain.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-emoji">🔗</div>
+            <h3>4. Transfer Ownership</h3>
+            <p>Ownership is automatically transferred on the blockchain for transparency and security.</p>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Decentralized College Marketplace | Built for Hackathon</p>
+    </footer>
+
+    <!-- Modal for feature description -->
+    <div id="featureModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <p id="featureText"></p>
+        </div>
+    </div>
+
+    <!-- ✅ Load your JS file AFTER ethers -->
+    <script src="js/app.js"></script>
+
+    <!-- Feature modal script -->
+    <script>
+        const modal = document.getElementById('featureModal');
+        const featureText = document.getElementById('featureText');
+
+        function showFeatureDescription(description) {
+            featureText.textContent = description;
+            modal.style.display = 'flex'; // Use flex to center content
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Close modal if user clicks outside modal content
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

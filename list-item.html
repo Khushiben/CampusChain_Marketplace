@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List Item | Decentralized College Marketplace</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">College Marketplace</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="marketplace.html">Marketplace</a></li>
+      <li><a href="list-item.html">List Item</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><button id="connectWalletBtn">Connect Wallet</button></li>
+    </ul>
+  </nav>
+
+  <!-- List Item Section -->
+  <section class="list-item-form modern-form">
+    <h2>🛒 List Your Item</h2>
+    <form id="itemForm">
+      <div class="form-group">
+        <input type="text" id="itemName" placeholder="Item Name" required />
+      </div>
+      <div class="form-group">
+        <input type="text" id="itemDesc" placeholder="Description" required />
+      </div>
+      <div class="form-group">
+        <input type="number" step="0.001" id="itemPrice" placeholder="Price (ETH)" required />
+      </div>
+      <div class="form-group">
+        <input type="url" id="itemImg" placeholder="Image URL" required />
+      </div>
+      <div class="form-group">
+        <input type="text" id="ownerName" placeholder="Your Name (optional)" />
+      </div>
+      <button type="submit" class="submit-btn">List Item</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Decentralized College Marketplace | Built for Hackathon</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let userAddress = sessionStorage.getItem("userAddress") || null;
+      const btn = document.getElementById("connectWalletBtn");
+      if (btn && userAddress) {
+        btn.innerText = userAddress.substring(0,6) + "..." + userAddress.substring(userAddress.length - 4);
+      }
+
+      const itemForm = document.getElementById("itemForm");
+      itemForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        userAddress = sessionStorage.getItem("userAddress") || null;
+        if (!userAddress) {
+          alert("Please connect your wallet first!");
+          return;
+        }
+
+        const ownerName = document.getElementById("ownerName").value.trim() || "Anonymous";
+
+        const newItem = {
+          id: "item_" + Date.now(), // stable unique id
+          name: document.getElementById("itemName").value.trim(),
+          description: document.getElementById("itemDesc").value.trim(),
+          price: document.getElementById("itemPrice").value.trim(),
+          img: document.getElementById("itemImg").value.trim(),
+          owner: userAddress,
+          ownerName: ownerName,
+        };
+
+        // Use shared helper to add
+        addListedItem(newItem);
+
+        alert(`✅ Item "${newItem.name}" listed successfully!`);
+        itemForm.reset();
+        // Optionally redirect to marketplace or dashboard:
+        // location.href = "marketplace.html";
+      });
+    });
+  </script>
+</body>
+</html>
