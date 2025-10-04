@@ -33,9 +33,13 @@
       <div class="form-group">
         <input type="number" step="0.001" id="itemPrice" placeholder="Price (ETH)" required />
       </div>
+
+      <!-- Updated Image Input -->
       <div class="form-group">
-        <input type="url" id="itemImg" placeholder="Image URL" required />
+        <input type="file" id="itemImg" accept="image/*" required />
+        <img id="preview" src="" alt="Image Preview" style="max-width:200px; display:block; margin-top:10px;" />
       </div>
+
       <div class="form-group">
         <input type="text" id="ownerName" placeholder="Your Name (optional)" />
       </div>
@@ -51,43 +55,71 @@
   <script src="js/app.js"></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      let userAddress = sessionStorage.getItem("userAddress") || null;
-      const btn = document.getElementById("connectWalletBtn");
-      if (btn && userAddress) {
-        btn.innerText = userAddress.substring(0,6) + "..." + userAddress.substring(userAddress.length - 4);
-      }
+document.addEventListener("DOMContentLoaded", () => {
+  let userAddress = sessionStorage.getItem("userAddress") || null;
+  const btn = document.getElementById("connectWalletBtn");
+  if (btn && userAddress) {
+    btn.innerText = userAddress.substring(0,6) + "..." + userAddress.substring(userAddress.length - 4);
+  }
 
-      const itemForm = document.getElementById("itemForm");
-      itemForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        userAddress = sessionStorage.getItem("userAddress") || null;
-        if (!userAddress) {
-          alert("Please connect your wallet first!");
-          return;
-        }
+  const itemForm = document.getElementById("itemForm");
+  const preview = document.getElementById("preview"); // image preview element
 
-        const ownerName = document.getElementById("ownerName").value.trim() || "Anonymous";
+  // Show live preview when user selects an image
+  document.getElementById("itemImg").addEventListener("change", function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
+  });
 
-        const newItem = {
-          id: "item_" + Date.now(), // stable unique id
-          name: document.getElementById("itemName").value.trim(),
-          description: document.getElementById("itemDesc").value.trim(),
-          price: document.getElementById("itemPrice").value.trim(),
-          img: document.getElementById("itemImg").value.trim(),
-          owner: userAddress,
-          ownerName: ownerName,
-        };
+  itemForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    userAddress = sessionStorage.getItem("userAddress") || null;
+    if (!userAddress) {
+      alert("Please connect your wallet first!");
+      return;
+    }
 
-        // Use shared helper to add
-        addListedItem(newItem);
+    const ownerName = document.getElementById("ownerName").value.trim() || "Anonymous";
 
-        alert(`✅ Item "${newItem.name}" listed successfully!`);
-        itemForm.reset();
-        // Optionally redirect to marketplace or dashboard:
-        // location.href = "marketplace.html";
-      });
-    });
-  </script>
+    const itemFile = document.getElementById("itemImg").files[0];
+    if (!itemFile) {
+      alert("Please select an image!");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imgData = e.target.result; // base64 string of uploaded image
+
+      const newItem = {
+        id: "item_" + Date.now(), // stable unique id
+        name: document.getElementById("itemName").value.trim(),
+        description: document.getElementById("itemDesc").value.trim(),
+        price: document.getElementById("itemPrice").value.trim(),
+        img: imgData, // store as base64 string
+        owner: userAddress,
+        ownerName: ownerName,
+      };
+
+      // Use shared helper to add
+      addListedItem(newItem);
+
+      alert(`✅ Item "${newItem.name}" listed successfully!`);
+      itemForm.reset();
+      preview.src = ""; // clear preview
+    };
+    reader.readAsDataURL(itemFile);
+  });
+});
+</script>
+
 </body>
 </html>
