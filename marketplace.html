@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace - Decentralized College Marketplace</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- ✅ Ethers.js + QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">College Marketplace</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="marketplace.html">Marketplace</a></li>
+      <li><a href="list-item.html">List Item</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><button id="connectWalletBtn">Connect Wallet</button></li>
+    </ul>
+  </nav>
+
+  <!-- Marketplace -->
+  <section class="marketplace">
+    <marquee behavior="scroll" direction="left" scrollamount="10" class="marquee-text18">
+      Marketplace
+    </marquee>
+    <div id="itemsContainer" class="items-grid"></div>
+  </section>
+
+  <!-- Scanner Modal -->
+  <div id="scannerModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeScanner()">&times;</span>
+      <div id="scannerAnimation">
+        <div class="scanner-box">
+          <div class="scanner-line"></div>
+        </div>
+        <p id="scannerText">🔍 Scanning item...</p>
+      </div>
+      <div id="ownerInfo" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Decentralized College Marketplace | Built for Hackathon</p>
+  </footer>
+
+  <!-- Shared app.js -->
+  <script src="js/app.js"></script>
+
+  <!-- Marketplace-specific loader -->
+  <script>
+    // ✅ Fix: Always reload the page from localStorage when user navigates back
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) {
+        location.reload();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const itemsContainer = document.getElementById("itemsContainer");
+      const items = getListedItems();
+
+      if (!Array.isArray(items) || items.length === 0) {
+        itemsContainer.innerHTML = `<p>No items listed yet. Add some from the "List Item" page!</p>`;
+        return;
+      }
+
+      itemsContainer.innerHTML = ""; // clear existing before rendering
+
+      for (const [index, item] of items.entries()) {
+        const card = document.createElement("div");
+        card.className = "item-card flip-card";
+        card.innerHTML = `
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="${item.img}" alt="${item.name}">
+              <h4>${item.name}</h4>
+              <p>${item.description}</p>
+              <p><strong>Price:</strong> ${item.price} ETH</p>
+              <button onclick="buyItem('${item.name}', '${item.price}')">Buy</button>
+              <button onclick="flipCard(this)">🔍 Scan / QR</button>
+            </div>
+            <div class="flip-card-back">
+              <div id="qrcode-${index}" class="qrcode-box"></div>
+              <p><strong>Owner Wallet:</strong> ${item.owner || "0xUnknown"}</p>
+              <p><strong>Owner Name:</strong> ${item.ownerName || "Anonymous"}</p>
+              <button onclick="flipCard(this)">↩ Back</button>
+            </div>
+          </div>
+        `;
+        itemsContainer.appendChild(card);
+
+        // Generate QR code
+        QRCode.toCanvas(
+          document.getElementById(`qrcode-${index}`),
+          item.owner || "0xUnknown",
+          { width: 150 }
+        );
+      }
+    });
+
+    function flipCard(button) {
+      const cardInner = button.closest(".flip-card-inner");
+      cardInner.classList.toggle("flipped");
+    }
+  </script>
+
+</body>
+</html>
