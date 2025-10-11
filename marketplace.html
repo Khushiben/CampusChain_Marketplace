@@ -1,17 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Marketplace - Decentralized College Marketplace</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 
-  <!-- ✅ Ethers.js + QR Code -->
+  <!-- Ethers.js + QR Code -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-</head>
-<body>
 
+  <style>
+    /* ---------------- Flip Card + QR Horizontal ---------------- */
+    .flip-card {
+      background-color: transparent;
+      perspective: 1000px;
+      margin: 15px auto;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      max-width: 260px;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      margin: 0 auto;
+    }
+
+    .flip-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 15px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .flip-card-front img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+      background: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* QR Codes horizontal layout */
+    .qr-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0;
+      flex-wrap: wrap; /* wraps on smaller screens */
+    }
+
+    .qr-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+    }
+
+    .qrcode-box, .upi-qr {
+      width: 80px;
+      height: 80px;
+      margin-top: 5px;
+    }
+
+    .flip-card button {
+      margin-top: 8px;
+      padding: 8px 12px;
+      width: 90%;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg, #8e2de2, #4a00e0);
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .flip-card button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    @media (min-width: 900px) {
+      .flip-card-inner {
+        max-width: 260px;
+      }
+    }
+  </style>
+</head>
+
+<body>
   <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">CampusChain</div>
@@ -32,20 +127,6 @@
     <div id="itemsContainer" class="items-grid"></div>
   </section>
 
-  <!-- Scanner Modal -->
-  <div id="scannerModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeScanner()">&times;</span>
-      <div id="scannerAnimation">
-        <div class="scanner-box">
-          <div class="scanner-line"></div>
-        </div>
-        <p id="scannerText">🔍 Scanning item...</p>
-      </div>
-      <div id="ownerInfo" style="display:none;"></div>
-    </div>
-  </div>
-
   <!-- Footer -->
   <footer>
     <p>&copy; 2025 Decentralized College Marketplace | Built for Hackathon</p>
@@ -56,11 +137,8 @@
 
   <!-- Marketplace-specific loader -->
   <script>
-    // ✅ Fix: Always reload the page from localStorage when user navigates back
     window.addEventListener("pageshow", (event) => {
-      if (event.persisted) {
-        location.reload();
-      }
+      if (event.persisted) location.reload();
     });
 
     document.addEventListener("DOMContentLoaded", async () => {
@@ -72,11 +150,12 @@
         return;
       }
 
-      itemsContainer.innerHTML = ""; // clear existing before rendering
+      itemsContainer.innerHTML = "";
 
       for (const [index, item] of items.entries()) {
         const card = document.createElement("div");
         card.className = "item-card flip-card";
+
         card.innerHTML = `
           <div class="flip-card-inner">
             <div class="flip-card-front">
@@ -85,23 +164,36 @@
               <p>${item.description}</p>
               <p><strong>Price:</strong> ${item.price} ETH</p>
               <button onclick="buyItem('${item.name}', '${item.price}')">Buy</button>
-              <button onclick="flipCard(this)">🔍 Scan / QR</button>
+              <button onclick="flipCard(this)">🔍 View QR</button>
             </div>
+
             <div class="flip-card-back">
-              <div id="qrcode-${index}" class="qrcode-box"></div>
+              <h4>Payment Options</h4>
+              <div class="qr-container">
+                <div class="qr-item">
+                  <p><strong>MetaMask:</strong></p>
+                  <canvas id="qrcode-${index}" class="qrcode-box"></canvas>
+                </div>
+                <div class="qr-item">
+                  <p><strong>UPI:</strong></p>
+                  
+                  <img src="upi.jpg" alt="UPI QR" class="upi-qr">
+                </div>
+              </div>
               <p><strong>Owner Wallet:</strong> ${item.owner || "0xUnknown"}</p>
               <p><strong>Owner Name:</strong> ${item.ownerName || "Anonymous"}</p>
               <button onclick="flipCard(this)">↩ Back</button>
             </div>
           </div>
         `;
+
         itemsContainer.appendChild(card);
 
-        // Generate QR code
+        // Generate MetaMask QR dynamically
         QRCode.toCanvas(
           document.getElementById(`qrcode-${index}`),
           item.owner || "0xUnknown",
-          { width: 150 }
+          { width: 130 }
         );
       }
     });
@@ -111,6 +203,5 @@
       cardInner.classList.toggle("flipped");
     }
   </script>
-
 </body>
 </html>
