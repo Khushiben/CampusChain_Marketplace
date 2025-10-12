@@ -19,22 +19,37 @@ async function connectWallet() {
     const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
     const userAddress = accounts[0];
     sessionStorage.setItem("userAddress", userAddress);
-    updateConnectButton();
 
-    if (typeof onWalletConnected === "function") onWalletConnected(userAddress);
+    // 🔹 Try ENS name first
+    const ensName = await resolveENS(userAddress);
+    if (ensName) {
+      sessionStorage.setItem("username", ensName);
+    } else {
+      // 🔹 Ask user for a display name if ENS not found
+      let username = sessionStorage.getItem("username");
+      if (!username) {
+        username = prompt("Enter your display name (e.g., Khushi):") || "User";
+        sessionStorage.setItem("username", username);
+      }
+    }
+
+    await updateConnectButton();
+
   } catch (err) {
     console.error("Wallet connect error:", err);
     alert("❌ Could not connect wallet.");
   }
 }
 
-function updateConnectButton() {
+async function updateConnectButton() {
   const btn = document.getElementById("connectWalletBtn");
   const address = sessionStorage.getItem("userAddress");
+  const username = sessionStorage.getItem("username");
   if (!btn) return;
 
   if (address) {
-    btn.innerText = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+    // 🔹 Show ENS or username, else short wallet
+    btn.innerText = username || `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   } else {
     btn.innerText = "Connect Wallet";
   }
@@ -48,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (addr) {
         if (confirm("Disconnect wallet?")) {
           sessionStorage.removeItem("userAddress");
+          sessionStorage.removeItem("username");
           updateConnectButton();
           location.reload();
         }

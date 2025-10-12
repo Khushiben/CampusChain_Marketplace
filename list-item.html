@@ -57,10 +57,6 @@
   <script>
 document.addEventListener("DOMContentLoaded", () => {
   let userAddress = sessionStorage.getItem("userAddress") || null;
-  const btn = document.getElementById("connectWalletBtn");
-  if (btn && userAddress) {
-    btn.innerText = userAddress.substring(0,6) + "..." + userAddress.substring(userAddress.length - 4);
-  }
 
   const itemForm = document.getElementById("itemForm");
   const preview = document.getElementById("preview"); // image preview element
