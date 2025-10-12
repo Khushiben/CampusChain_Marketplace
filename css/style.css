@@ -1,3 +1,10 @@
+
+
+/* Push all page content below navbar */
+body > *:not(.navbar):not(.market-bg) {
+  padding-top: 80px; /* slightly larger than navbar height */
+}
+
 /* ---------- GLOBAL LAYOUT FIX (added at top) ---------- */
 html, body {
   height: 100%;
@@ -14,31 +21,45 @@ body {
 }
 
 /* ---------- Navbar ---------- */
+/* ---------- NAVBAR FIX (for all pages) ---------- */
+/* ---------- NAVBAR FIX (for all pages) ---------- */
 .navbar {
+  position: fixed;  /* keep navbar fixed on top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;     /* set navbar height */
+  z-index: 100;  
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; /* vertically center content */
   background: #2c3e50;
-  padding: 10px 20px;
-  color: #fff;
+  padding: 0 20px;   /* removed top/bottom padding to prevent clipping */
+  color: #fff;   /* above polygon background and other content */
+  overflow: visible; /* make sure nothing is clipped */
 }
 
 .navbar .logo {
   font-size: 1.5em;
   font-weight: bold;
+  line-height: 1; /* prevent vertical overflow */
 }
 
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: 20px; /* added spacing between links */
+  flex-wrap: wrap; /* prevents cutoff on smaller screens */
+  justify-content: flex-end;
 }
 
 .nav-links li {
   display: inline;
 }
 
-.nav-links a, .nav-links button {
+.nav-links a,
+.nav-links button {
   color: #fff;
   text-decoration: none;
   padding: 5px 10px;
@@ -46,12 +67,41 @@ body {
   cursor: pointer;
   background: none;
   font-size: 1em;
+  line-height: 1.2; /* keep content inside navbar height */
+  white-space: nowrap; /* ✅ prevents text breaking in half */
 }
 
-.nav-links button:hover, .nav-links a:hover {
+.nav-links button {
   background: #34495e;
   border-radius: 5px;
+  padding: 6px 14px;
+  min-width: 120px; /* ✅ ensures enough space for name like “khush…” */
+  overflow: visible; /* ensures full text shows */
 }
+
+.nav-links button:hover,
+.nav-links a:hover {
+  background: #1abc9c;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+/* ✅ Optional responsive behavior */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    align-items: flex-start;
+    padding: 10px 20px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+
 
 /* ---------- Hero Section ---------- */
 .hero {
@@ -483,7 +533,7 @@ footer {
 /* ---------- Modern List Form ---------- */
 .modern-form {
   max-width: 600px;
-  margin: 40px auto;
+  margin: 150px auto;
   background: #fff;
   padding: 80px;
   border-radius: 12px;
@@ -593,6 +643,7 @@ footer {
 @media (min-width: 1000px) {
   .stat-card { width: 260px; }
 }
+
 /* Image Preview Modal */
 .image-modal-content {
   display: flex;
@@ -627,4 +678,71 @@ footer {
   right: 25px;
   color: #333;
   cursor: pointer;
+}
+
+/* ---------- Polygon Background Animation ---------- */
+:root {
+  --c1: #ff6b6b;
+  --c2: #feca57;
+  --c3: #48dbfb;
+  --c4: #1dd1a1;
+  --c5: #5f27cd;
+}
+
+/* ---------- Fullscreen Background Container ---------- */
+.polygon-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1; /* behind all content */
+  background: #fff; /* ✅ white background for the page */
+}
+
+/* ---------- Base Polygon Styles ---------- */
+.poly {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, var(--c1), var(--c2), var(--c3), var(--c4), var(--c5));
+  background-size: 400% 400%;
+  opacity: 0.25; /* ✅ lighter for white background */
+  border-radius: 16px;
+  clip-path: polygon(
+    20% 0%, 80% 0%, 100% 30%, 80% 70%, 50% 100%, 20% 80%, 0% 50%
+  );
+  animation: float 20s ease-in-out infinite, colorShift 15s ease-in-out infinite alternate;
+}
+
+/* ---------- Multiple Polygons Positions & Sizes ---------- */
+.poly1 { top: 10%; left: 5%; width: 250px; height: 250px; animation-duration: 25s, 18s; }
+.poly2 { top: 30%; left: 60%; width: 300px; height: 300px; animation-duration: 20s, 22s; }
+.poly3 { top: 55%; left: 25%; width: 200px; height: 200px; animation-duration: 28s, 20s; }
+.poly4 { top: 70%; left: 75%; width: 350px; height: 350px; animation-duration: 30s, 25s; }
+.poly5 { top: 15%; left: 80%; width: 180px; height: 180px; animation-duration: 22s, 19s; }
+.poly6 { top: 50%; left: 45%; width: 220px; height: 220px; animation-duration: 27s, 21s; }
+
+/* ---------- Floating Motion ---------- */
+@keyframes float {
+  0% { transform: translate(0,0) rotate(0deg); }
+  25% { transform: translate(40px,-30px) rotate(15deg); }
+  50% { transform: translate(-30px,40px) rotate(-10deg); }
+  75% { transform: translate(20px,-20px) rotate(10deg); }
+  100% { transform: translate(0,0) rotate(0deg); }
+}
+
+/* ---------- Gradient Color Shift ---------- */
+@keyframes colorShift {
+  0% { background-position: 0% 0%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* ---------- Optional Responsive Scaling ---------- */
+@media (max-width: 768px) {
+  .poly { width: 150px; height: 150px; }
 }

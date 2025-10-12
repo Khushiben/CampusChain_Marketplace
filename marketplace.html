@@ -52,18 +52,21 @@ body {
 .bubble-bg span:nth-child(6) { left: 85%; width: 20px; height: 20px; animation-duration: 19s; }
 .bubble-bg span:nth-child(7) { left: 50%; width: 40px; height: 40px; animation-duration: 30s; }
 
+/* Float animation */
 @keyframes float {
   0% { transform: translateY(100vh) translateX(0) rotate(0deg); }
   50% { transform: translateY(50vh) translateX(20px) rotate(45deg); }
   100% { transform: translateY(-100px) translateX(-20px) rotate(90deg); }
 }
 
+/* Gradient animation */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+/* Main content */
 main {
   position: relative;
   z-index: 1;
@@ -77,7 +80,7 @@ main {
 }
 
 
-.flip-card {
+   .flip-card {
   background-color: transparent;
   perspective: 1000px;
   margin: 20px auto;
@@ -124,6 +127,7 @@ main {
   background: #f9f9f9;
 }
 
+/* QR layout - Vertical alignment with better spacing */
 .qr-container {
   display: flex;
   flex-direction: column;
@@ -153,6 +157,7 @@ main {
   background: #fff;
 }
 
+/* Wallet & Owner Info */
 .owner-info {
   margin-top: 12px;
   font-size: 13px;
@@ -167,6 +172,7 @@ main {
   color: #222;
 }
 
+/* Button */
 .flip-card button {
   margin-top: 20px;
   padding: 10px 14px;
@@ -185,6 +191,7 @@ main {
   opacity: 0.9;
 }
 
+/* Responsive adjustments */
 @media (min-width: 900px) {
   .flip-card-inner {
     max-width: 280px;
@@ -212,6 +219,8 @@ main {
   <span></span>
 </div>
 
+  
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">CampusChain</div>
     <ul class="nav-links">
@@ -223,6 +232,7 @@ main {
     </ul>
   </nav>
 
+  <!-- Marketplace -->
   <section class="marketplace">
     <marquee behavior="scroll" direction="left" scrollamount="10" class="marquee-text18">
       Marketplace
@@ -230,12 +240,12 @@ main {
     <div id="itemsContainer" class="items-grid"></div>
   </section>
 
-  <footer>
-    <p>&copy; 2025 Decentralized College Marketplace | Built for Hackathon</p>
-  </footer>
 
+
+  <!-- Shared app.js -->
   <script src="js/app.js"></script>
 
+  <!-- Marketplace-specific loader -->
   <script>
     window.addEventListener("pageshow", (event) => {
       if (event.persisted) location.reload();
@@ -246,7 +256,7 @@ main {
       const items = getListedItems();
 
       if (!Array.isArray(items) || items.length === 0) {
-        itemsContainer.innerHTML = "<p>No items listed yet. Add some from the 'List Item' page!</p>";
+        itemsContainer.innerHTML = `<p>No items listed yet. Add some from the "List Item" page!</p>`;
         return;
       }
 
@@ -276,6 +286,7 @@ main {
                 </div>
                 <div class="qr-item">
                   <p><strong>UPI:</strong></p>
+                  
                   <img src="upi.jpg" alt="UPI QR" class="upi-qr">
                 </div>
               </div>
@@ -288,7 +299,7 @@ main {
 
         itemsContainer.appendChild(card);
 
-        // ✅ Fixed template literal for dynamic element ID
+        // Generate MetaMask QR dynamically
         QRCode.toCanvas(
           document.getElementById(`qrcode-${index}`),
           item.owner || "0xUnknown",
