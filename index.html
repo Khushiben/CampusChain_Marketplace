@@ -11,6 +11,15 @@
 </head>
 <body>
 
+<!-- Animated multi-polygon background -->
+<div class="polygon-bg">
+  <div class="polygon poly1"></div>
+  <div class="polygon poly2"></div>
+  <div class="polygon poly3"></div>
+</div>
+
+
+  
     <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">CampusChain</div>
@@ -37,23 +46,59 @@
             Features
         </marquee>
         <div class="feature-cards">
-            <div class="card" onclick="showFeatureDescription('Ensure trust and authenticity. Only verified students can list items.')">
-                <h3>Verified Students Only</h3>
-                <p style="color: #4562d5;"><u>Click to see details</u></p>
-            </div>
-            <div class="card" onclick="showFeatureDescription('Peer-to-peer transactions using crypto. No middleman required.')">
-                <h3>Secure Payments</h3>
-                <p style="color: #4562d5;"><u>Click to see details</u></p>
-            </div>
-            <div class="card" onclick="showFeatureDescription('Ownership transfer recorded on blockchain. Fully transparent and secure.')">
-                <h3>Digital Ownership</h3>
-                <p style="color: #4562d5;"><u>Click to see details</u></p>
-            </div>
-            <div class="card" onclick="showFeatureDescription('Upload and sell notes, guides, or other digital creations within college.')">
-                <h3>Sell Digital Content</h3>
-<p style="color: #4562d5;"><u>Click to see details</u></p>
-            </div>
-        </div>
+  <div class="card" onclick="this.classList.toggle('flipped')">
+    <div class="card-inner">
+      <div class="card-front">
+        <h3>Verified Students Only</h3>
+        <p><u>Click to see details</u></p>
+      </div>
+      <div class="card-back">
+        <h4>Ensure trust and authenticity.</h4>
+        <p>Only verified students can list and trade items securely.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" onclick="this.classList.toggle('flipped')">
+    <div class="card-inner">
+      <div class="card-front">
+        <h3>Secure Payments</h3>
+        <p><u>Click to see details</u></p>
+      </div>
+      <div class="card-back">
+        <h4>Crypto-powered transactions</h4>
+        <p>Peer-to-peer payments — fast, secure, no middleman.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" onclick="this.classList.toggle('flipped')">
+    <div class="card-inner">
+      <div class="card-front">
+        <h3>Digital Ownership</h3>
+        <p><u>Click to see details</u></p>
+      </div>
+      <div class="card-back">
+        <h4>Blockchain-backed ownership</h4>
+        <p>Every item transfer is transparently recorded and verified.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" onclick="this.classList.toggle('flipped')">
+    <div class="card-inner">
+      <div class="card-front">
+        <h3>Sell Digital Content</h3>
+        <p><u>Click to see details</u></p>
+      </div>
+      <div class="card-back">
+        <h4>Monetize your creativity</h4>
+        <p>Upload and sell notes, guides, or digital creations easily.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
     </section>
 
     <!-- How It Works Section -->
